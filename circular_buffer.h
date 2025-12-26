@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <fstream>
+#include <sstream>
 
 template<typename T>
 class CircularBuffer {
@@ -40,33 +41,25 @@ public:
     size_t get_capacity() { return capacity; }
 
     void load(const std::string& filename) {
-        std::ifstream file(filename, std::ios::binary);
-        if (!file) throw std::runtime_error("Cannot open file");
+        std::ifstream file(filename);
 
-        file.read((char*)&capacity, sizeof(capacity));
-        file.read((char*)&size, sizeof(size));
-        file.read((char*)&front, sizeof(front));
-        file.read((char*)&back, sizeof(back));
+        file >> capacity >> size >> front >> back;
 
         data.resize(capacity);
         for (size_t i = 0; i < size; ++i) {
             size_t index = (front + i) % capacity;
-            file.read((char*)&data[index], sizeof(T));
+            file >> data[index];
         }
     }
 
     void save(const std::string& filename) {
-        std::ofstream file(filename, std::ios::binary);
-        if (!file) throw std::runtime_error("Cannot create file");
+        std::ofstream file(filename);
 
-        file.write((const char*)&capacity, sizeof(capacity));
-        file.write((const char*)&size, sizeof(size));
-        file.write((const char*)&front, sizeof(front));
-        file.write((const char*)&back, sizeof(back));
+        file << capacity << " " << size << " " << front << " " << back << "\n";
 
         for (size_t i = 0; i < size; ++i) {
             size_t index = (front + i) % capacity;
-            file.write((const char*)&data[index], sizeof(T));
+            file << data[index] << " ";
         }
     }
 };
