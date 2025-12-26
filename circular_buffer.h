@@ -20,7 +20,7 @@ public:
         data.resize(cap);
     }
 
-    void push(const T& value) {
+    void push(T value) {
         if (full()) throw std::runtime_error("Full");
         data[back] = value;
         back = (back + 1) % capacity;
@@ -40,7 +40,7 @@ public:
     size_t get_size() { return size; }
     size_t get_capacity() { return capacity; }
 
-    void load(const std::string& filename) {
+    void load(std::string filename) {
         std::ifstream file(filename);
 
         file >> capacity >> size >> front >> back;
@@ -52,7 +52,7 @@ public:
         }
     }
 
-    void save(const std::string& filename) {
+    void save(std::string filename) {
         std::ofstream file(filename);
 
         file << capacity << " " << size << " " << front << " " << back << "\n";
